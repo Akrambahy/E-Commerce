@@ -75,7 +75,7 @@
             {
                 name = null;
                price = 0;
-               stock = 0;
+               stock = 1;
                 return false; 
             }
 
