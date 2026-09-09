@@ -27,7 +27,44 @@
             return true;
 
         }
-        
+        void GetProductBySubName(string name , Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+        {
+            
+ 
+            List<KeyValuePair<int, string> > products= productNames.Where(product => product.Value.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList() ;
+
+            foreach (KeyValuePair<int , string> product in products)
+            {
+                Console.WriteLine($"id :{product.Key}  , Name : {product.Value} , Price : {productPrices[product.Key]} , Stocks  : {productStocks[product.Key]}\n");
+            }
+
+        }
+        void GetProductByLessOrEqualPrice(decimal price , Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+        {
+            
+                   List<KeyValuePair<int , decimal>> products = productPrices.Where(product => product.Value <=price ).ToList();
+
+            foreach (KeyValuePair<int , decimal> product in products)
+            {
+                Console.WriteLine($"id :{product.Key}  , Name : {productNames[product.Key]} , Price : {productPrices[product.Key]} , Stocks  : {productStocks[product.Key]}\n");
+            }
+
+        }
+        void SortProducts( Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+        {
+            
+                   List<KeyValuePair<int , decimal>> aProductPrices = productPrices.OrderByDescending(price => price.Value).ToList();
+                //    List<KeyValuePair<int , string>> aProductNames = productNames.OrderByDescending(Name => productPrices.GetValueOrDefault(Name.Key)).ToList();
+                //    List<KeyValuePair<int , int>> aProductStocks = productStocks.OrderByDescending(Stock => productPrices[Stock.Key]).ToList();
+
+                            foreach (KeyValuePair<int , decimal> product in aProductPrices)
+            {
+                Console.WriteLine($"id :{product.Key}  , Name : {productNames[product.Key]} , Price : {productPrices[product.Key]} , Stocks  : {productStocks[product.Key]}\n");
+            }
+
+        }
+
+
 
 
         void PrintProduct(int id, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
