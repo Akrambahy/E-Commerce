@@ -1,0 +1,15 @@
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/bin/Debug/net9.0/E-Commerce
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/bin/Debug/net9.0/E-Commerce.deps.json
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/bin/Debug/net9.0/E-Commerce.runtimeconfig.json
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/bin/Debug/net9.0/E-Commerce.dll
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/bin/Debug/net9.0/E-Commerce.pdb
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.GeneratedMSBuildEditorConfig.editorconfig
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.AssemblyInfoInputs.cache
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.AssemblyInfo.cs
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.csproj.CoreCompileInputs.cache
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.sourcelink.json
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.dll
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/refint/E-Commerce.dll
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.pdb
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/E-Commerce.genruntimeconfig.cache
+/home/akrambahy/E-Commerce/E-Commerce/E-Commerce/obj/Debug/net9.0/ref/E-Commerce.dll
