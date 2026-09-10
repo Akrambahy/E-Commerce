@@ -263,6 +263,44 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
             return total;
         }
 
+enum DiscountType{
+
+NoDiscount ,
+Percentage10,
+Percentage20,
+Fixed500
+
+}
+
+
+
+decimal ApplyDiscount(decimal total, DiscountType discountType)
+        {
+            if(total <=0)  throw new ArgumentException("total Is Zero");
+
+            switch (discountType)
+            {
+                 case   DiscountType.NoDiscount :
+                 
+                 return total;
+
+                 case   DiscountType.Percentage10 :
+                 return (total - (total*(decimal)0.10)) ;
+                 case   DiscountType.Percentage20 :
+                 return (total - (total*(decimal)0.20)) ;
+                 case   DiscountType.Fixed500  :
+                 return (total -  500 ) ;
+                 default:
+    throw new ArgumentOutOfRangeException("discount exception");
+
+
+
+            }
+
+            return default ;
+
+        }
+
         static void Main(string[] args)
         {
             Dictionary<int, string> productNames = new Dictionary<int, string> { };
