@@ -208,22 +208,22 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
             if (!customerPhones.Remove(id)) { customerNames[id] = oldName; customerEmails[id] = oldEmail; return false; }
             return true;
         }
-     
-     
-             bool IsExistInCart( int productId , Dictionary<int, int> cart)
+
+
+        bool IsExistInCart(int productId, Dictionary<int, int> cart)
         {
             return (cart.ContainsKey(productId));
         }
 
 
-        bool AddToCart( int productId,int quantity, Dictionary<int, int> cart,Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+        bool AddToCart(int productId, int quantity, Dictionary<int, int> cart, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
         {
 
 
-            if(!IsAvilbleProduct(productId , productNames , productPrices , productStocks) || quantity <= 0  || quantity>productStocks.GetValueOrDefault(productId) ) return false;
-           if(cart.TryGetValue(productId, out int currentQuantity) && quantity + currentQuantity <= productStocks[productId] ) {cart[productId] +=quantity; return true ; }
-           if(! cart.TryAdd(productId , quantity)) {return false;}
-           return true ;
+            if (!IsAvilbleProduct(productId, productNames, productPrices, productStocks) || quantity <= 0 || quantity > productStocks.GetValueOrDefault(productId)) return false;
+            if (cart.TryGetValue(productId, out int currentQuantity) && quantity + currentQuantity <= productStocks[productId]) { cart[productId] += quantity; return true; }
+            if (!cart.TryAdd(productId, quantity)) { return false; }
+            return true;
 
         }
 
@@ -231,74 +231,101 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
 
 
 
-        bool RemoveFromCart( int productId,int quantity, Dictionary<int, int> cart)
+        bool RemoveFromCart(int productId, int quantity, Dictionary<int, int> cart)
 
         {
-               if(! cart.TryGetValue(productId , out int currentQuantity)|| quantity <= 0  || quantity>currentQuantity ) return false;
-           if(quantity==currentQuantity ) {cart.Remove(productId);     return true ;}
-           cart[productId]-=quantity;
-           return true ;
-          
+            if (!cart.TryGetValue(productId, out int currentQuantity) || quantity <= 0 || quantity > currentQuantity) return false;
+            if (quantity == currentQuantity) { cart.Remove(productId); return true; }
+            cart[productId] -= quantity;
+            return true;
+
         }
 
-        decimal CalculateCartTotal(Dictionary<int , int> cart , Dictionary<int, decimal> productPrices)
+        decimal CalculateCartTotal(Dictionary<int, int> cart, Dictionary<int, decimal> productPrices)
         {
             decimal total = 0m;
 
 
-           
 
-     foreach (KeyValuePair<int , int > product in cart)
+
+            foreach (KeyValuePair<int, int> product in cart)
             {
 
-   if (!productPrices.TryGetValue(product.Key, out decimal currentPrice))
+                if (!productPrices.TryGetValue(product.Key, out decimal currentPrice))
                 {
                     throw new ArgumentException($"product {product.Key} not has value");
                 }
 
                 total += (currentPrice * product.Value);
 
-            }            
+            }
 
             return total;
         }
 
-enum DiscountType{
-
-NoDiscount ,
-Percentage10,
-Percentage20,
-Fixed500
-
-}
-
-
-
-decimal ApplyDiscount(decimal total, DiscountType discountType)
+        enum DiscountType
         {
-            if(total <=0)  throw new ArgumentException("total Is Zero");
+
+            NoDiscount,
+            Percentage10,
+            Percentage20,
+            Fixed500
+
+        }
+
+
+
+        decimal ApplyDiscount(decimal total, DiscountType discountType)
+        {
+            if (total <= 0) throw new ArgumentException("total Is Zero");
 
             switch (discountType)
             {
-                 case   DiscountType.NoDiscount :
-                 
-                 return total;
+                case DiscountType.NoDiscount:
 
-                 case   DiscountType.Percentage10 :
-                 return (total - (total*(decimal)0.10)) ;
-                 case   DiscountType.Percentage20 :
-                 return (total - (total*(decimal)0.20)) ;
-                 case   DiscountType.Fixed500  :
-                 return (total -  500 ) ;
-                 default:
-    throw new ArgumentOutOfRangeException("discount exception");
+                    return total;
+
+                case DiscountType.Percentage10:
+                    return (total - (total * (decimal)0.10));
+                case DiscountType.Percentage20:
+                    return (total - (total * (decimal)0.20));
+                case DiscountType.Fixed500:
+                    return (total - 500);
+                default:
+                    throw new ArgumentOutOfRangeException("discount exception");
 
 
 
             }
 
-            return default ;
 
+        }
+
+     
+
+        bool UpdateStock( Dictionary<int, int> cart, Dictionary<int, int> productStocks)
+        {
+
+             foreach(KeyValuePair<int , int> product in cart)
+            {
+                if(productStocks[product.Key]<product.Value) return false ;
+                       
+            }
+            foreach(KeyValuePair<int , int> product in cart)
+            {
+                               productStocks[product.Key]-=product.Value;
+            }
+            return true;
+            
+        }
+      
+        decimal Checkout( Dictionary<int, int> cart, Dictionary<int, decimal> productPrices, DiscountType discountType , Dictionary<int, int> productStocks)
+        {
+            
+            decimal finalTotal=ApplyDiscount(CalculateCartTotal(cart , productPrices)  , discountType);
+          if( ! UpdateStock(cart,productStocks)) throw new ArgumentException("error on stocks");
+
+            return finalTotal ;
         }
 
         static void Main(string[] args)
@@ -308,7 +335,7 @@ decimal ApplyDiscount(decimal total, DiscountType discountType)
             Dictionary<int, int> productStocks = new Dictionary<int, int> { };
 
 
-            Dictionary<int, string> customerNames = new Dictionary<int, string> ();
+            Dictionary<int, string> customerNames = new Dictionary<int, string>();
             Dictionary<int, string> customerEmails = new Dictionary<int, string> { };
             Dictionary<int, string> customerPhones = new Dictionary<int, string> { };
 
