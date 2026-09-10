@@ -1,4 +1,6 @@
-﻿namespace E_Commerce
+﻿using System.Collections.Generic;
+
+namespace E_Commerce
 {
     internal class Program
 
@@ -301,33 +303,91 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
 
         }
 
-     
 
-        bool UpdateStock( Dictionary<int, int> cart, Dictionary<int, int> productStocks)
+
+        bool UpdateStock(Dictionary<int, int> cart, Dictionary<int, int> productStocks)
         {
 
-             foreach(KeyValuePair<int , int> product in cart)
+            foreach (KeyValuePair<int, int> product in cart)
             {
-                if(productStocks[product.Key]<product.Value) return false ;
-                       
+                if (productStocks[product.Key] < product.Value) return false;
+
             }
-            foreach(KeyValuePair<int , int> product in cart)
+            foreach (KeyValuePair<int, int> product in cart)
             {
-                               productStocks[product.Key]-=product.Value;
+                productStocks[product.Key] -= product.Value;
             }
             return true;
-            
+
         }
-      
-        decimal Checkout( Dictionary<int, int> cart, Dictionary<int, decimal> productPrices, DiscountType discountType , Dictionary<int, int> productStocks)
+
+        bool Checkout(int orderId, Dictionary<int, Order> orders, int customerId, DateTime orderDate, out Order order, Dictionary<int, int> cart, Dictionary<int, decimal> productPrices, DiscountType discountType, Dictionary<int, int> productStocks)
         {
-            
-            decimal finalTotal=ApplyDiscount(CalculateCartTotal(cart , productPrices)  , discountType);
-          if( ! UpdateStock(cart,productStocks)) throw new ArgumentException("error on stocks");
+            Order currentOrder = new Order();
 
-            return finalTotal ;
+            decimal finalTotal = ApplyDiscount(CalculateCartTotal(cart, productPrices), discountType);
+            if (!CreateOrder(orderId, orders, customerId, finalTotal, orderDate, cart, out currentOrder) )
+            {
+                order = default;
+                return false;
+            }
+            if (!UpdateStock(cart, productStocks)) {
+                 orders.Remove(orderId);
+                 order=default;
+                return false;
+                throw new ArgumentException("error on stocks");
+                }
+
+            order = currentOrder;
+
+
+            return true;
         }
 
+        struct Order
+        {
+            public int OrderId;
+            public int CustomerId;
+            public decimal Total;
+            public DateTime OrderDate;
+            public Dictionary<int, int> Items;
+        }
+
+
+        bool IsExistOrder(int orderId, Dictionary<int, Order> orders)
+        {
+            return orders.ContainsKey(orderId);
+        }
+
+
+
+
+        bool CreateOrder(int orderId, Dictionary<int, Order> orders, int customerId, decimal total, DateTime orderDate, Dictionary<int, int> items, out Order order)
+        {
+            if (IsExistOrder(orderId, orders))
+            {
+                order = default;
+                return false;
+            }
+
+            Order currentOrder = new Order();
+            currentOrder.OrderId = orderId;
+            currentOrder.CustomerId = customerId;
+            currentOrder.Total = total;
+            currentOrder.OrderDate = orderDate;
+            currentOrder.Items = new Dictionary<int, int>(items);
+
+
+            if (!orders.TryAdd(orderId, currentOrder))
+            {
+                order = default;
+                return false;
+            }
+
+            order = currentOrder;
+
+            return true;
+        }
         static void Main(string[] args)
         {
             Dictionary<int, string> productNames = new Dictionary<int, string> { };
@@ -341,6 +401,7 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
 
 
             Dictionary<int, int> cart = new Dictionary<int, int>();
+            Dictionary<int, Order> orders = new Dictionary<int, Order>();
         }
     }
 }
