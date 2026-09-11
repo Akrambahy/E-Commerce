@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 
 namespace E_Commerce
 {
@@ -502,43 +503,34 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
         }
 
 
-
-// Rules
-// Product لازم يكون موجود في الـ cart.
-// newQuantity لازم تكون أكبر من 0.
-// newQuantity مينفعش تتعدى الـ stock.
-// لو كل حاجة صحيحة → نحدث الكمية.
-// لو أي validation فشل → الـ cart مايتغيرش.
+Func<KeyValuePair<int, Order>, bool>;
 
 
+List <KeyValuePair<int, Order>> GetOrdersByCustomerId(int customerId,Dictionary<int, Order> orders)
+        {
 
+            List <KeyValuePair<int, Order>> customerOrders = orders.Where(order => (order.Value.CustomerId)==customerId).ToList();
+            return customerOrders;
+        }
+List <KeyValuePair<int, Order>> GetOrdersByMinTotal(int customerId,decimal minTotal,Dictionary<int, Order> orders)
+        {
 
+            List <KeyValuePair<int, Order>> customerOrders = orders.Where(order => (order.Value.CustomerId)==customerId && (order.Value.Total)>=minTotal).ToList();
+            return customerOrders;
+        }
+List <KeyValuePair<int, Order>> GetOrdersBetweenTwoDates(int customerId,decimal minTotal,Dictionary<int, Order> orders, DateTime fromDate , DateTime  toDate )
+        {
 
+            List <KeyValuePair<int, Order>> customerOrders = orders.Where(order => (order.Value.OrderDate)>=fromDate && (order.Value.OrderDate)<=toDate).ToList();
+            return customerOrders;
+        }
 
+     List <KeyValuePair<T, O>>  GetOrders<T,O>( Func<KeyValuePair<T, O>, bool> condition ,Dictionary<T, O> orders)
+        { 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            List <KeyValuePair<T, O>> customerOrders = orders.Where( condition).ToList();
+            return customerOrders;
+        }
 
 
 
