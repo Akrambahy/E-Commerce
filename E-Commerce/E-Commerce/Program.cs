@@ -388,6 +388,173 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
 
             return true;
         }
+        bool TryRemoveOrder(int orderId, Dictionary<int, Order> orders,  Dictionary<int, int> productStocks)
+        {
+            if (!orders.TryGetValue(orderId , out Order order))
+            {
+                return false;
+            }
+     
+            
+ Dictionary<int, int> oldProductStocks= new Dictionary<int, int> (productStocks);
+
+           
+ foreach (KeyValuePair<int , int> item in order.Items)
+            {
+                if(!productStocks.ContainsKey(item.Key)){
+                    productStocks.Clear();
+
+             foreach (KeyValuePair<int , int> productStock in oldProductStocks)
+            {
+              
+
+                productStocks.Add(productStock.Key,productStock.Value);
+            
+            }
+                
+                 return false ;}
+                productStocks[item.Key]+=item.Value;
+            }
+            if (!orders.Remove(orderId))
+            {
+                productStocks.Clear();
+
+             foreach (KeyValuePair<int , int> productStock in oldProductStocks)
+            {
+              
+
+                productStocks.Add(productStock.Key,productStock.Value);
+            
+            }
+     
+                return false ;
+            }
+
+            return true;
+        }
+
+
+
+        bool TryGetOrder(int orderId, Dictionary<int, Order> orders, out Order order)
+        {
+            if (!orders.TryGetValue(orderId, out order))
+            {
+              
+                return false ;
+            }
+                  
+          
+           return true ;
+            
+
+        }
+
+
+
+
+        void PrintItems(Dictionary<int, int> items ){
+             
+             if(items.Count==0)
+            {
+              Console.WriteLine("items not found");
+              return;
+              
+            }
+
+            else
+            {
+                foreach(KeyValuePair<int , int> item in items)
+                Console.WriteLine($"Product Id: {item.Key} | Quantity: {item.Value}");
+                
+            }
+        }
+        void PrintOrder(int orderId,Dictionary<int, Order> orders ){
+             Order order;
+             if(!TryGetOrder(orderId,orders,out order))
+            {
+              Console.WriteLine("order not found");
+              return;
+              
+            }
+
+            else
+            {
+                Console.WriteLine($"Order Id {order.OrderId}");
+                Console.WriteLine($"Customer Id {order.CustomerId}");
+                Console.WriteLine($"Total {order.Total}");
+                Console.WriteLine($"Order Date {order.OrderDate}");
+                Console.WriteLine($"Order Items : ");
+                PrintItems(order.Items);
+            }
+        }
+
+
+
+
+
+        bool ChangeCartQuantity(int productId,int newQuantity,  Dictionary<int, int> cart, Dictionary<int, int> productStocks)
+        {
+            if(!IsExistInCart(productId,cart) || newQuantity <= 0 ||! productStocks.TryGetValue(productId,out int stock)|| newQuantity > stock) return false ;
+             
+             cart[productId]= newQuantity;
+             return true;
+
+        }
+
+
+
+// Rules
+// Product لازم يكون موجود في الـ cart.
+// newQuantity لازم تكون أكبر من 0.
+// newQuantity مينفعش تتعدى الـ stock.
+// لو كل حاجة صحيحة → نحدث الكمية.
+// لو أي validation فشل → الـ cart مايتغيرش.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         static void Main(string[] args)
         {
             Dictionary<int, string> productNames = new Dictionary<int, string> { };
