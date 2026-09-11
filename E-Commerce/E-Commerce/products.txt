@@ -1,0 +1,4 @@
+1 | Laptop | 25000 | 5
+2 | Mouse | 500 | 20
+3 | Keyboard | 1000 | 104 
+4 | Manga | 40 | 8

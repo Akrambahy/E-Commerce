@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data;
+using System.Text;
 
 namespace E_Commerce
 {
@@ -8,7 +10,7 @@ namespace E_Commerce
     {
 
 
-        void RollbackProduct(int id, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+       static  void RollbackProduct(int id, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
         {
 
             if (productNames.ContainsKey(id)) productNames.Remove(id);
@@ -21,7 +23,7 @@ namespace E_Commerce
 
 
 
-        bool AddProduct(int id, string name, decimal price, int stock, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+      static  bool AddProduct(int id, string name, decimal price, int stock, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
         {
             if (price <= 0 || stock < 0 || (productNames.ContainsKey(id) || productPrices.ContainsKey(id) || productStocks.ContainsKey(id))) return false;
             if (!productNames.TryAdd(id, name)) { return false; }
@@ -503,7 +505,6 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
         }
 
 
-Func<KeyValuePair<int, Order>, bool>;
 
 
 List <KeyValuePair<int, Order>> GetOrdersByCustomerId(int customerId,Dictionary<int, Order> orders)
@@ -525,21 +526,42 @@ List <KeyValuePair<int, Order>> GetOrdersBetweenTwoDates(int customerId,decimal 
             return customerOrders;
         }
 
-     List <KeyValuePair<T, O>>  GetOrders<T,O>( Func<KeyValuePair<T, O>, bool> condition ,Dictionary<T, O> orders)
+   static  List <KeyValuePair<T, O>>  GetItem<T,O>( Func<KeyValuePair<T, O>, bool> condition ,Dictionary<T, O> items)
         { 
 
-            List <KeyValuePair<T, O>> customerOrders = orders.Where( condition).ToList();
+            List <KeyValuePair<T, O>> customerOrders = items.Where( condition).ToList();
             return customerOrders;
         }
 
 
+ static void SaveProduct(int id, string name,decimal price,int stock,string filePath)
+        {
+            File.AppendAllText(filePath,$"{id} | {name} | {price} | {stock}\n");
+        }
 
 
 
+ static void SaveAllProduct(Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks,string filePath)
+        {
+            StringBuilder productsData=new StringBuilder("") ;
+            foreach(KeyValuePair<int, string> product in productNames){
+            productsData.Append($"{product.Key} | {productNames[product.Key]} | {productPrices[product.Key]} | {productStocks[product.Key]}\n");
+            }
+                        File.WriteAllText(filePath,productsData.ToString());
 
+        }
 
+       static void LoadProducts(string filePath, Dictionary<int, string> productNames, Dictionary<int, decimal> productPrices, Dictionary<int, int> productStocks)
+        {
+            if(!File.Exists(filePath)) return;
+           foreach(string line in File.ReadAllLines(filePath))
+            {
+                string [] vars= line.Split(" | ");
+                if (vars.Length !=4 ) continue;
+             if(int.TryParse(vars[0],out int id) && decimal.TryParse(vars[2], out decimal  price  ) && int.TryParse(vars[3],out int stock) )  AddProduct(id,vars[1],price,stock , productNames,productPrices,productStocks);
 
-
+            }
+        }
 
 
 
@@ -549,18 +571,27 @@ List <KeyValuePair<int, Order>> GetOrdersBetweenTwoDates(int customerId,decimal 
 
         static void Main(string[] args)
         {
-            Dictionary<int, string> productNames = new Dictionary<int, string> { };
+            Dictionary<int, string> productNames = new Dictionary<int, string> ();
             Dictionary<int, decimal> productPrices = new Dictionary<int, decimal> { };
             Dictionary<int, int> productStocks = new Dictionary<int, int> { };
 
 
+        //    SaveProduct(4,"Manga", 40 , 8 , "products.txt");
+           LoadProducts("products.txt",productNames ,productPrices ,productStocks  );
+           Console.WriteLine(productNames[1]);
             Dictionary<int, string> customerNames = new Dictionary<int, string>();
             Dictionary<int, string> customerEmails = new Dictionary<int, string> { };
             Dictionary<int, string> customerPhones = new Dictionary<int, string> { };
 
-
             Dictionary<int, int> cart = new Dictionary<int, int>();
             Dictionary<int, Order> orders = new Dictionary<int, Order>();
+
+
+                   Func<KeyValuePair<int, string>  , bool>  condition=name => name.Value.Length>5;
+               List<KeyValuePair<int, string>> products =  GetItem(condition,productNames);
+
+         
+
         }
     }
 }
