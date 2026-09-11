@@ -327,8 +327,16 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
         bool Checkout(int orderId, Dictionary<int, Order> orders, int customerId, DateTime orderDate, out Order order, Dictionary<int, int> cart, Dictionary<int, decimal> productPrices, DiscountType discountType, Dictionary<int, int> productStocks)
         {
             Order currentOrder = new Order();
-
-            decimal finalTotal = ApplyDiscount(CalculateCartTotal(cart, productPrices), discountType);
+            decimal finalTotal ;
+           try {   finalTotal = ApplyDiscount(CalculateCartTotal(cart, productPrices), discountType);}
+                catch
+                {
+                    finalTotal=default;
+                    Console.WriteLine("Product Not Found");
+                      order = default;
+                      return false ;
+                    
+                }
             if (!CreateOrder(orderId, orders, customerId, finalTotal, orderDate, cart, out currentOrder) )
             {
                 order = default;
