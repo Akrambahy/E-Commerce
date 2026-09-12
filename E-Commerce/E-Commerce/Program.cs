@@ -309,11 +309,12 @@ Dictionary<int, string> customerNames, Dictionary<int, string> customerEmails, D
 
 
         bool UpdateStock(Dictionary<int, int> cart, Dictionary<int, int> productStocks)
-        {
+        { 
+            
 
             foreach (KeyValuePair<int, int> product in cart)
             {
-                if (productStocks[product.Key] < product.Value) return false;
+                if (!productStocks.TryGetValue(product.Key ,out int stock) || stock< product.Value) return false;
 
             }
             foreach (KeyValuePair<int, int> product in cart)
@@ -571,8 +572,38 @@ List <KeyValuePair<int, Order>> GetOrdersBetweenTwoDates(int customerId,decimal 
             }
         }
 
+enum MainMenuOptions
+        {
+         Products=1,
+ Customers=2,
+Cart=3,
+Checkout=4,
+Orders=5,
+Exit=6
+        }
 
 
+static MainMenuOptions DisplayMenu()
+        {
+
+      Console.WriteLine("Products : 1");
+      Console.WriteLine("Customers : 2");
+      Console.WriteLine("Cart : 3");
+      Console.WriteLine("Checkout : 4");
+      Console.WriteLine("Orders : 5");
+      Console.WriteLine("Exit : 6");
+
+      int choise;
+
+      
+        while  (!int.TryParse(Console.ReadLine() , out choise)|| choise >6 || choise <1 ) {
+                Console.WriteLine("invalid input ");
+                Console.ReadKey();
+                   
+            }
+            return (MainMenuOptions)choise;
+            
+        }
 
 
 
@@ -597,9 +628,57 @@ List <KeyValuePair<int, Order>> GetOrdersBetweenTwoDates(int customerId,decimal 
 
                    Func<KeyValuePair<int, string>  , bool>  condition=name => name.Value.Length>5;
                List<KeyValuePair<int, string>> products =  GetItem(condition,productNames);
+bool running = true;
 
+while (running)
+{
+    MainMenuOptions choice = DisplayMenu();
+
+    switch (choice)
+    {
+        case MainMenuOptions.Products:
+            break;
+
+        case MainMenuOptions.Customers:
+            break;
+
+        case MainMenuOptions.Cart:
+            break;
+
+        case MainMenuOptions.Checkout:
+            break;
+
+        case MainMenuOptions.Orders:
+            break;
+
+        case MainMenuOptions.Exit:
+            running = false;
+            break;
+    }
+}
+
+
+SaveAllProducts(...);
+
+}
+
+    //         try
+    //         {
+    //              Console.Write("Enter customer id: ");
+    //            int customerId = int.Parse(Console.ReadLine());
+
+    //           Console.Write("Enter discount: ");
+    //             int discount = int.Parse(Console.ReadLine());
+    //         }
+    //         catch(FormatException)
+    //         {
+    //             Console.WriteLine("invalid Input \n");
+    //            DisplayMenu();
+
+    //         }
+                
          
 
-        }
-    }
+    //     }
+    // }
 }
